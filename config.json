@@ -1,58 +1,54 @@
 {
-  "size": {
-    "width": 1920,
-    "height": 1080
-  },
-  "iteration_count": 10000,
-  "output_path": "fractal.png",
-  "threads": 4,
-  "seed": 42,
-  "functions": [
-    {
-      "name": "sinusoidal",
-      "weight": 1.0
+    "size": {
+        "width": 1920,
+        "height": 1080
     },
-    {
-      "name": "spherical",
-      "weight": 0.8
-    },
-    {
-      "name": "swirl",
-      "weight": 1.2
-    },
-    {
-      "name": "horseshoe",
-      "weight": 0.7
-    },
-    {
-      "name": "polar",
-      "weight": 0.6
-    }
-  ],
-  "affine_params": [
-    {
-      "a": 0.5,
-      "b": 0.3,
-      "c": 0.1,
-      "d": 0.2,
-      "e": 0.6,
-      "f": 0.05
-    },
-    {
-      "a": 1.0,
-      "b": 0.0,
-      "c": 0.0,
-      "d": 0.0,
-      "e": 1.0,
-      "f": 0.0
-    },
-    {
-      "a": -0.5,
-      "b": 0.5,
-      "c": 0.2,
-      "d": 0.3,
-      "e": -0.4,
-      "f": 0.1
-    }
-  ]
+    "iteration_count": 10000,
+    "output_path": "fractal.png",
+    "threads": 4,
+    "seed": 42,
+    "functions": [
+        {
+            "name": "sinusoidal",
+            "weight": 1.0
+        },
+        {
+            "name": "spherical",
+            "weight": 0.8
+        },
+        {
+            "name": "horseshoe",
+            "weight": 0.7
+        },
+        {
+            "name": "heart",
+            "weight": 1
+        }
+    ],
+    "affine_params": [
+        {
+            "a": 0.5,
+            "b": 0.3,
+            "c": 0.1,
+            "d": 0.2,
+            "e": 0.6,
+            "f": 0.05
+        },
+        {
+            "a": 1.0,
+            "b": 0.0,
+            "c": 0.0,
+            "d": 0.0,
+            "e": 1.0,
+            "f": 0.0
+        },
+        {
+            "a": -0.5,
+            "b": 0.5,
+            "c": 0.2,
+            "d": 0.3,
+            "e": -0.4,
+            "f": 0.1
+        }
+    ]
 }
