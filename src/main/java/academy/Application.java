@@ -1,40 +1,45 @@
 package academy;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
+import academy.config.ConfigLoader;
+import academy.model.FractalConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
-import picocli.CommandLine.Parameters;
 
-@Command(name = "Application Example", version = "Example 1.0", mixinStandardHelpOptions = true)
+
+// java -jar target/project-1.0.jar --config config.json
+@Command(name = "fractal-flame", version = "1.0", mixinStandardHelpOptions = true)
 public class Application implements Runnable {
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
-    private static final ObjectReader YAML_READER =
-            new ObjectMapper(new YAMLFactory()).findAndRegisterModules().reader();
 
-    @Option(
-            names = {"-s", "--font-size"},
-            description = "Font size",
-            defaultValue = "12")
-    int fontSize;
+    @Option(names = {"-w", "--width"}, description = "Image width")
+    private Integer width;
 
-    @Parameters(
-            paramLabel = "<word>",
-            defaultValue = "Hello, picocli",
-            description = "Words to be translated into ASCII art.")
-    private String[] words;
+    @Option(names = {"-h", "--height"}, description = "Image height")
+    private Integer height;
 
-    @Option(
-            names = {"-c", "--config"},
-            description = "Path to JSON config file")
-    private File configPath;
+    @Option(names = {"--seed"}, description = "Random generator seed")
+    private Long seed;
+
+    @Option(names = {"-i", "--iteration-count"}, description = "Number of iterations")
+    private Integer iterationCount;
+
+    @Option(names = {"-o", "--output-path"}, description = "Output PNG file path")
+    private String outputPath;
+
+    @Option(names = {"-t", "--threads"}, description = "Number of threads")
+    private Integer threads;
+
+    @Option(names = {"-ap", "--affine-params"}, description = "Affine transformation parameters")
+    private String affineParams;
+
+    @Option(names = {"-f", "--functions"}, description = "Transformation functions with weights")
+    private String functions;
+
+    @Option(names = {"--config"}, description = "Path to JSON config file")
+    private String configPath;
 
     public static void main(String[] args) {
         int exitCode = new CommandLine(new Application()).execute(args);
@@ -43,21 +48,24 @@ public class Application implements Runnable {
 
     @Override
     public void run() {
-        var config = loadConfig();
-        LOGGER.atInfo().addKeyValue("config", config).log("Config content");
-
-        // ... logic
-    }
-
-    private AppConfig loadConfig() {
-        // fill with cli options
-        if (configPath == null) return new AppConfig(fontSize, words);
-
-        // use config file if provided
         try {
-            return YAML_READER.readValue(configPath, AppConfig.class);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
+            FractalConfig config = ConfigLoader.load(
+                    configPath, width, height, seed, iterationCount, outputPath, threads, affineParams, functions);
+
+            LOGGER.atInfo()
+                    .addKeyValue("width", config.width())
+                    .addKeyValue("height", config.height())
+                    .addKeyValue("seed", config.seed())
+                    .addKeyValue("iterations", config.iterationCount())
+                    .addKeyValue("threads", config.threads())
+                    .addKeyValue("output", config.outputPath())
+                    .log("Starting fractal flame generation");
+
+            LOGGER.atInfo().log("Configuration loaded successfully");
+        } catch (Exception e) {
+            LOGGER.atError().setCause(e).log("Failed to generate fractal: {}", e.getMessage());
+            System.exit(1);
         }
     }
 }
+
