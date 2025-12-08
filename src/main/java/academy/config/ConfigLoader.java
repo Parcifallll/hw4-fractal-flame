@@ -43,6 +43,7 @@ public class ConfigLoader {
                 selectValue(outputPath, jsonConfig != null ? jsonConfig.outputPath : null, "result.png");
         int finalThreads = selectValue(threads, jsonConfig != null ? jsonConfig.threads : null, 1);
 
+        // Priority: CLI > JSON > defaults
         List<AffineTransformation> affineTransformations;
         if (affineParams != null && !affineParams.isBlank()) {
             affineTransformations = CliParser.parseAffineParams(affineParams);
@@ -52,6 +53,7 @@ public class ConfigLoader {
             affineTransformations = CliParser.parseAffineParams(null);
         }
 
+        // Priority: CLI > JSON > defaults
         List<WeightedFunction> weightedFunctions;
         if (functions != null && !functions.isBlank()) {
             weightedFunctions = CliParser.parseFunctions(functions);
@@ -120,6 +122,7 @@ public class ConfigLoader {
         return result;
     }
 
+    // Select value based on priority: CLI > JSON > default
     private static <T> T selectValue(T cliValue, T jsonValue, T defaultValue) {
         if (cliValue != null) {
             return cliValue;

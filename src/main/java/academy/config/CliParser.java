@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Random;
 
 public class CliParser {
+    // parse affine params in format: a,b,c,d,e,f/a,b,c,d,e,f/
     public static List<AffineTransformation> parseAffineParams(String affineParams) {
         if (affineParams == null || affineParams.isBlank()) {
             return generateDefaultAffine();
@@ -31,6 +32,7 @@ public class CliParser {
                 double e = Double.parseDouble(coeffs[4].trim());
                 double f = Double.parseDouble(coeffs[5].trim());
 
+                // put random color to each affine transformation
                 int red = new Random().nextInt(256);
                 int green = new Random().nextInt(256);
                 int blue = new Random().nextInt(256);
@@ -44,6 +46,7 @@ public class CliParser {
         return result;
     }
 
+    // parse functions in format: name:weight,name:weight, ...
     public static List<WeightedFunction> parseFunctions(String functions) {
         if (functions == null || functions.isBlank()) {
             return List.of(

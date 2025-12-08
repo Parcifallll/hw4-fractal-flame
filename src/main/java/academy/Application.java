@@ -2,14 +2,17 @@ package academy;
 
 import academy.config.ConfigLoader;
 import academy.model.FractalConfig;
+import academy.model.FractalImage;
+import academy.processor.ImageProcessor;
+import academy.renderer.Renderer;
+import academy.renderer.SingleThreadRenderer;
+import java.nio.file.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-
-// java -jar target/project-1.0.jar --config config.json
 @Command(name = "fractal-flame", version = "1.0", mixinStandardHelpOptions = true)
 public class Application implements Runnable {
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
@@ -61,7 +64,15 @@ public class Application implements Runnable {
                     .addKeyValue("output", config.outputPath())
                     .log("Starting fractal flame generation");
 
-            LOGGER.atInfo().log("Configuration loaded successfully");
+            // Render fractal
+            Renderer renderer = new SingleThreadRenderer();
+            FractalImage image = renderer.render(config);
+
+            // Save to file
+            ImageProcessor processor = new ImageProcessor();
+            processor.save(image, Path.of(config.outputPath()));
+
+            LOGGER.atInfo().log("Fractal generation completed successfully");
         } catch (Exception e) {
             LOGGER.atError().setCause(e).log("Failed to generate fractal: {}", e.getMessage());
             System.exit(1);
