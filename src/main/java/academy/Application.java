@@ -44,6 +44,12 @@ public class Application implements Runnable {
     @Option(names = {"--config"}, description = "Path to JSON config file")
     private String configPath;
 
+    @Option(names = {"-g", "--gamma-correction"}, description = "Enable gamma correction")
+    private Boolean gammaCorrection;
+
+    @Option(names = {"--gamma"}, description = "Gamma value for correction (default: 2.2)")
+    private Double gamma;
+
     public static void main(String[] args) {
         int exitCode = new CommandLine(new Application()).execute(args);
         System.exit(exitCode);
@@ -53,7 +59,17 @@ public class Application implements Runnable {
     public void run() {
         try {
             FractalConfig config = ConfigLoader.load(
-                    configPath, width, height, seed, iterationCount, outputPath, threads, affineParams, functions);
+                    configPath,
+                    width,
+                    height,
+                    seed,
+                    iterationCount,
+                    outputPath,
+                    threads,
+                    affineParams,
+                    functions,
+                    gammaCorrection,
+                    gamma);
 
             LOGGER.atInfo()
                     .addKeyValue("width", config.width())
@@ -70,7 +86,7 @@ public class Application implements Runnable {
 
             // Save to file
             ImageProcessor processor = new ImageProcessor();
-            processor.save(image, Path.of(config.outputPath()));
+            processor.save(image, Path.of(config.outputPath()), config.gammaCorrection(), config.gamma());
 
             LOGGER.atInfo().log("Fractal generation completed successfully");
         } catch (Exception e) {

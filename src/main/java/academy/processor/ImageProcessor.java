@@ -11,9 +11,8 @@ import org.slf4j.LoggerFactory;
 
 public class ImageProcessor {
     private static final Logger LOGGER = LoggerFactory.getLogger(ImageProcessor.class);
-    private static final double GAMMA = 2.2;
 
-    public void save(FractalImage image, Path outputPath) throws IOException {
+    public void save(FractalImage image, Path outputPath, boolean gammaCorrection, double gamma) throws IOException {
         LOGGER.info("Processing image for output");
 
         // Find max hit count for normalization
@@ -41,9 +40,12 @@ public class ImageProcessor {
                     double normalG = pixel.getG() / pixel.getHitCount();
                     double normalB = pixel.getB() / pixel.getHitCount();
 
-                    // Apply logarithmic gamma correction
-                    double brightness = Math.log10(pixel.getHitCount()) / Math.log10(maxHits);
-                    double correctedBrightness = Math.pow(brightness, 1.0 / GAMMA);
+                    double correctedBrightness = 1.0;
+                    if (gammaCorrection) {
+                        // Apply logarithmic gamma correction
+                        double brightness = Math.log10(pixel.getHitCount()) / Math.log10(maxHits);
+                        correctedBrightness = Math.pow(brightness, 1.0 / gamma);
+                    }
 
                     // Scale to [0, 255]
                     int r = clamp((int) (normalR * correctedBrightness));

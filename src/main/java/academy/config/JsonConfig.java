@@ -25,6 +25,12 @@ public class JsonConfig {
     @JsonProperty("affine_params")
     public List<AffineConfig> affineParams;
 
+    @JsonProperty("gamma_correction")
+    public Boolean gammaCorrection;
+
+    @JsonProperty("gamma")
+    public Double gamma;
+
     public static class SizeConfig {
         @JsonProperty("width")
         public Integer width;

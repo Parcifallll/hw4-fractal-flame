@@ -10,7 +10,9 @@ public record FractalConfig(
     String outputPath,
     int threads,
     List<AffineTransformation> affineTransformations,
-    List<WeightedFunction> weightedFunctions) {
+    List<WeightedFunction> weightedFunctions,
+    boolean gammaCorrection,
+    double gamma) {
 
     public FractalConfig {
         if (width <= 0) {
@@ -33,6 +35,9 @@ public record FractalConfig(
         }
         if (weightedFunctions == null || weightedFunctions.isEmpty()) {
             throw new IllegalArgumentException("At least one transformation function is required");
+        }
+        if (gamma <= 0) {
+            throw new IllegalArgumentException("Gamma must be positive, got: " + gamma);
         }
     }
 

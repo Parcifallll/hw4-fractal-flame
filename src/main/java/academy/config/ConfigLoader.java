@@ -23,7 +23,9 @@ public class ConfigLoader {
             String outputPath,
             Integer threads,
             String affineParams,
-            String functions) {
+            String functions,
+            Boolean gammaCorrection,
+            Double gamma) {
 
         JsonConfig jsonConfig = null;
         if (configPath != null && !configPath.isBlank()) {
@@ -42,6 +44,9 @@ public class ConfigLoader {
         String finalOutputPath =
                 selectValue(outputPath, jsonConfig != null ? jsonConfig.outputPath : null, "result.png");
         int finalThreads = selectValue(threads, jsonConfig != null ? jsonConfig.threads : null, 1);
+        boolean finalGammaCorrection = selectValue(
+                gammaCorrection, jsonConfig != null ? jsonConfig.gammaCorrection : null, true);
+        double finalGamma = selectValue(gamma, jsonConfig != null ? jsonConfig.gamma : null, 2.2);
 
         // Priority: CLI > JSON > defaults
         List<AffineTransformation> affineTransformations;
@@ -71,7 +76,9 @@ public class ConfigLoader {
                 finalOutputPath,
                 finalThreads,
                 affineTransformations,
-                weightedFunctions);
+                weightedFunctions,
+                finalGammaCorrection,
+                finalGamma);
     }
 
     private static JsonConfig loadJsonConfig(String path) {
