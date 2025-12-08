@@ -7,7 +7,10 @@ public enum TransformationType {
     SWIRL,
     HORSESHOE,
     POLAR,
-    DISC;
+    DISC,
+    HEART,
+    SPIRAL,
+    HYPERBOLIC;
 
     public static TransformationType fromString(String name) {
         try {
