@@ -23,7 +23,7 @@ class RendererPerformanceBenchmarkTest {
 
     private static final int BENCHMARK_WIDTH = 1920;
     private static final int BENCHMARK_HEIGHT = 1080;
-    private static final int BENCHMARK_ITERATIONS = 1_000;
+    private static final int BENCHMARK_ITERATIONS = 2_000;
     private static final int BENCHMARK_RUNS = 2;
 
     @Test
