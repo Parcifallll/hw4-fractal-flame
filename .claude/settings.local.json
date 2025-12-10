@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(java -jar:*)",
-      "Bash(./mvnw clean:*)"
+      "Bash(./mvnw clean:*)",
+      "Bash(bash:*)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []

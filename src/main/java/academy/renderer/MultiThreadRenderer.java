@@ -9,8 +9,7 @@ import academy.model.Rect;
 import academy.model.WeightedFunction;
 import academy.transformation.Transform;
 import academy.transformation.TransformFactory;
-import java.util.ArrayList;
-import java.util.List;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -44,7 +43,6 @@ public class MultiThreadRenderer implements Renderer {
         AtomicInteger completedSamples = new AtomicInteger(0);
         AtomicInteger lastLoggedPercent = new AtomicInteger(0);
 
-        List<RenderTask> tasks = new ArrayList<>();
         long baseSeed = config.seed();
 
         for (int threadId = 0; threadId < config.threads(); threadId++) {
@@ -63,7 +61,6 @@ public class MultiThreadRenderer implements Renderer {
                     completedSamples,
                     lastLoggedPercent);
 
-            tasks.add(task);
             executor.submit(task);
         }
 
@@ -150,12 +147,21 @@ public class MultiThreadRenderer implements Renderer {
 
             for (int sample = 0; sample < samples; sample++) {
                 // Start with random point in [-1, 1] range
-                Point point = new Point(random.nextDouble() * 2 - 1, random.nextDouble() * 2 - 1);
+                @SuppressFBWarnings(
+                        value = "DMI_RANDOM_USED_ONLY_ONCE",
+                        justification = "Random calls are intentional for generating random starting point")
+                double startX = random.nextDouble() * 2 - 1;
+                @SuppressFBWarnings(
+                        value = "DMI_RANDOM_USED_ONLY_ONCE",
+                        justification = "Random calls are intentional for generating random starting point")
+                double startY = random.nextDouble() * 2 - 1;
+                Point point = new Point(startX, startY);
 
                 // Skip first iterations to let the point "settle" into the attractor
                 for (int step = -SKIP_ITERATIONS; step < config.iterationCount(); step++) {
                     // Apply random affine transformation
-                    int affineIndex = random.nextInt(config.affineTransformations().size());
+                    int affineIndex =
+                            random.nextInt(config.affineTransformations().size());
                     AffineTransformation affine = config.affineTransformations().get(affineIndex);
                     point = affine.apply(point);
 

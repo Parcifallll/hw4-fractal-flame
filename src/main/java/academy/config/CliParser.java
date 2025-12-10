@@ -3,6 +3,7 @@ package academy.config;
 import academy.model.AffineTransformation;
 import academy.model.TransformationType;
 import academy.model.WeightedFunction;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -33,9 +34,14 @@ public class CliParser {
                 double f = Double.parseDouble(coeffs[5].trim());
 
                 // put random color to each affine transformation
-                int red = new Random().nextInt(256);
-                int green = new Random().nextInt(256);
-                int blue = new Random().nextInt(256);
+                // Intentionally creating new Random instance for each transformation to get different colors
+                @SuppressFBWarnings(
+                        value = "DMI_RANDOM_USED_ONLY_ONCE",
+                        justification = "Need different random colors for each affine transformation")
+                Random random = new Random();
+                int red = random.nextInt(256);
+                int green = random.nextInt(256);
+                int blue = random.nextInt(256);
 
                 result.add(new AffineTransformation(a, b, c, d, e, f, red, green, blue));
             } catch (NumberFormatException ex) {

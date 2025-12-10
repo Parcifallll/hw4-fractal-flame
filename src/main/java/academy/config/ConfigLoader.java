@@ -5,8 +5,10 @@ import academy.model.FractalConfig;
 import academy.model.TransformationType;
 import academy.model.WeightedFunction;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.File;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -32,20 +34,18 @@ public class ConfigLoader {
             jsonConfig = loadJsonConfig(configPath);
         }
 
-        int finalWidth = selectValue(width, jsonConfig != null && jsonConfig.size != null
-                ? jsonConfig.size.width
-                : null, 1920);
-        int finalHeight = selectValue(height, jsonConfig != null && jsonConfig.size != null
-                ? jsonConfig.size.height
-                : null, 1080);
+        int finalWidth =
+                selectValue(width, jsonConfig != null && jsonConfig.size != null ? jsonConfig.size.width : null, 1920);
+        int finalHeight = selectValue(
+                height, jsonConfig != null && jsonConfig.size != null ? jsonConfig.size.height : null, 1080);
         long finalSeed = selectValue(seed, jsonConfig != null ? jsonConfig.seed : null, 5L);
-        int finalIterationCount = selectValue(
-                iterationCount, jsonConfig != null ? jsonConfig.iterationCount : null, 2500);
+        int finalIterationCount =
+                selectValue(iterationCount, jsonConfig != null ? jsonConfig.iterationCount : null, 2500);
         String finalOutputPath =
                 selectValue(outputPath, jsonConfig != null ? jsonConfig.outputPath : null, "result.png");
         int finalThreads = selectValue(threads, jsonConfig != null ? jsonConfig.threads : null, 1);
-        boolean finalGammaCorrection = selectValue(
-                gammaCorrection, jsonConfig != null ? jsonConfig.gammaCorrection : null, true);
+        boolean finalGammaCorrection =
+                selectValue(gammaCorrection, jsonConfig != null ? jsonConfig.gammaCorrection : null, true);
         double finalGamma = selectValue(gamma, jsonConfig != null ? jsonConfig.gamma : null, 2.2);
 
         // Priority: CLI > JSON > defaults
@@ -83,25 +83,24 @@ public class ConfigLoader {
 
     private static JsonConfig loadJsonConfig(String path) {
         try {
-            File file = new File(path);
-            if (!file.exists()) {
+            Path filePath = Path.of(path);
+            if (!Files.exists(filePath)) {
                 throw new IllegalArgumentException("Config file not found: " + path);
             }
-            return MAPPER.readValue(file, JsonConfig.class);
+            return MAPPER.readValue(filePath.toFile(), JsonConfig.class);
         } catch (IOException e) {
             throw new RuntimeException("Failed to load config file: " + e.getMessage(), e);
         }
     }
 
+    @SuppressFBWarnings(
+            value = "DMI_RANDOM_USED_ONLY_ONCE",
+            justification = "Random instance used multiple times in loop for generating colors")
     private static List<AffineTransformation> convertAffineFromJson(List<JsonConfig.AffineConfig> affineConfigs) {
         List<AffineTransformation> result = new ArrayList<>();
         Random random = new Random();
 
         for (JsonConfig.AffineConfig config : affineConfigs) {
-            int red = random.nextInt(256);
-            int green = random.nextInt(256);
-            int blue = random.nextInt(256);
-
             result.add(new AffineTransformation(
                     config.a != null ? config.a : 1.0,
                     config.b != null ? config.b : 0.0,
@@ -109,9 +108,9 @@ public class ConfigLoader {
                     config.d != null ? config.d : 0.0,
                     config.e != null ? config.e : 1.0,
                     config.f != null ? config.f : 0.0,
-                    red,
-                    green,
-                    blue));
+                    random.nextInt(256),
+                    random.nextInt(256),
+                    random.nextInt(256)));
         }
 
         return result;
