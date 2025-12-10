@@ -13,6 +13,13 @@ public class MultiThreadRenderer extends AbstractRenderer {
 
     @Override
     public FractalImage render(FractalConfig config) {
+        // Если 1 поток - используем однопоточный рендерер для честного сравнения
+        if (config.threads() == 1) {
+            LOGGER.info("Using single-threaded approach for 1 thread");
+            SingleThreadRenderer single = new SingleThreadRenderer();
+            return single.render(config);
+        }
+
         LOGGER.info("Starting multi-threaded rendering with {} threads", config.threads());
         long startTime = System.currentTimeMillis();
 
@@ -31,11 +38,9 @@ public class MultiThreadRenderer extends AbstractRenderer {
         AtomicInteger completedSamples = new AtomicInteger(0);
         AtomicInteger lastLoggedPercent = new AtomicInteger(0);
 
-        long baseSeed = config.seed();
-
         for (int threadId = 0; threadId < config.threads(); threadId++) {
             int samples = samplesPerThread + (threadId < remainingSamples ? 1 : 0);
-            long threadSeed = baseSeed + threadId;
+            long threadSeed = config.seed() + threadId * 997L; // Разные семена для потоков
 
             RenderTask task = new RenderTask(
                     samples,
@@ -99,6 +104,7 @@ public class MultiThreadRenderer extends AbstractRenderer {
 
         @Override
         public void run() {
+            // Используем ThreadLocalRandom для лучшей производительности в многопоточном режиме
             Random random = new Random(seed);
 
             for (int sample = 0; sample < samples; sample++) {

@@ -10,6 +10,7 @@ import academy.model.WeightedFunction;
 import academy.transformation.Transform;
 import academy.transformation.TransformFactory;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
@@ -75,6 +76,17 @@ public abstract class AbstractRenderer implements Renderer {
             Transform[] transforms,
             FractalImage image) {
 
+        // Кэшируем часто используемые значения
+        double worldX = WORLD.x();
+        double worldY = WORLD.y();
+        double worldWidth = WORLD.width();
+        double worldHeight = WORLD.height();
+        int width = config.width();
+        int height = config.height();
+
+        List<AffineTransformation> affineList = config.affineTransformations();
+        int affineSize = affineList.size();
+
         // Start with random point in [-1, 1] range
         double startX = random.nextDouble() * 2 - 1;
         double startY = random.nextDouble() * 2 - 1;
@@ -83,8 +95,8 @@ public abstract class AbstractRenderer implements Renderer {
         // Skip first iterations to let the point "settle" into the attractor
         for (int step = -SKIP_ITERATIONS; step < config.iterationCount(); step++) {
             // Apply random affine transformation
-            int affineIndex = random.nextInt(config.affineTransformations().size());
-            AffineTransformation affine = config.affineTransformations().get(affineIndex);
+            int affineIndex = random.nextInt(affineSize);
+            AffineTransformation affine = affineList.get(affineIndex);
             point = affine.apply(point);
 
             // Apply random non-linear transformation based on weights
@@ -92,14 +104,21 @@ public abstract class AbstractRenderer implements Renderer {
             point = transforms[transformIndex].apply(point);
 
             // Only plot points after warm-up and if they're within bounds
-            if (step >= 0 && WORLD.contains(point.x(), point.y())) {
-                // Map world coordinates to pixel coordinates
-                int x = (int) ((point.x() - WORLD.x()) / WORLD.width() * config.width());
-                int y = (int) ((point.y() - WORLD.y()) / WORLD.height() * config.height());
+            if (step >= 0) {
+                double x = point.x();
+                double y = point.y();
 
-                Pixel pixel = image.pixel(x, y);
-                if (pixel != null) {
-                    pixel.hit(affine.red(), affine.green(), affine.blue());
+                if (x >= worldX && x <= worldX + worldWidth && y >= worldY && y <= worldY + worldHeight) {
+
+                    // Map world coordinates to pixel coordinates
+                    int pixelX = (int) ((x - worldX) / worldWidth * width);
+                    int pixelY = (int) ((y - worldY) / worldHeight * height);
+
+                    // Проверка границ
+                    if (pixelX >= 0 && pixelX < width && pixelY >= 0 && pixelY < height) {
+                        Pixel pixel = image.pixel(pixelX, pixelY);
+                        pixel.hit(affine.red(), affine.green(), affine.blue());
+                    }
                 }
             }
         }
