@@ -32,20 +32,18 @@ public class ConfigLoader {
             jsonConfig = loadJsonConfig(configPath);
         }
 
-        int finalWidth = selectValue(width, jsonConfig != null && jsonConfig.size != null
-                ? jsonConfig.size.width
-                : null, 1920);
-        int finalHeight = selectValue(height, jsonConfig != null && jsonConfig.size != null
-                ? jsonConfig.size.height
-                : null, 1080);
+        int finalWidth =
+                selectValue(width, jsonConfig != null && jsonConfig.size != null ? jsonConfig.size.width : null, 1920);
+        int finalHeight = selectValue(
+                height, jsonConfig != null && jsonConfig.size != null ? jsonConfig.size.height : null, 1080);
         long finalSeed = selectValue(seed, jsonConfig != null ? jsonConfig.seed : null, 5L);
-        int finalIterationCount = selectValue(
-                iterationCount, jsonConfig != null ? jsonConfig.iterationCount : null, 2500);
+        int finalIterationCount =
+                selectValue(iterationCount, jsonConfig != null ? jsonConfig.iterationCount : null, 2500);
         String finalOutputPath =
                 selectValue(outputPath, jsonConfig != null ? jsonConfig.outputPath : null, "result.png");
         int finalThreads = selectValue(threads, jsonConfig != null ? jsonConfig.threads : null, 1);
-        boolean finalGammaCorrection = selectValue(
-                gammaCorrection, jsonConfig != null ? jsonConfig.gammaCorrection : null, true);
+        boolean finalGammaCorrection =
+                selectValue(gammaCorrection, jsonConfig != null ? jsonConfig.gammaCorrection : null, true);
         double finalGamma = selectValue(gamma, jsonConfig != null ? jsonConfig.gamma : null, 2.2);
 
         // Priority: CLI > JSON > defaults
@@ -129,7 +127,7 @@ public class ConfigLoader {
         return result;
     }
 
-    // Select value based on priority: CLI > JSON > default
+    // Select value based on priority
     private static <T> T selectValue(T cliValue, T jsonValue, T defaultValue) {
         if (cliValue != null) {
             return cliValue;

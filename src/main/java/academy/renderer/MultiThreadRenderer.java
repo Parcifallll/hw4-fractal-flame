@@ -155,7 +155,8 @@ public class MultiThreadRenderer implements Renderer {
                 // Skip first iterations to let the point "settle" into the attractor
                 for (int step = -SKIP_ITERATIONS; step < config.iterationCount(); step++) {
                     // Apply random affine transformation
-                    int affineIndex = random.nextInt(config.affineTransformations().size());
+                    int affineIndex =
+                            random.nextInt(config.affineTransformations().size());
                     AffineTransformation affine = config.affineTransformations().get(affineIndex);
                     point = affine.apply(point);
 
