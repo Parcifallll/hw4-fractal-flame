@@ -54,7 +54,7 @@ public class SingleThreadRenderer implements Renderer {
 
                     Pixel pixel = image.pixel(x, y);
                     if (pixel != null) {
-                        pixel.hit(point.r(), point.g(), point.b());
+                        pixel.hit(affine.red(), affine.green(), affine.blue());
                     }
                 }
             }
