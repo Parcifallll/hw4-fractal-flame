@@ -4,7 +4,7 @@
         "height": 1080
     },
     "iteration_count": 30000,
-    "output_path": "fractal_5.png",
+    "output_path": "fractal_1.png",
     "threads": 4,
     "seed": 4535,
     "gamma_correction": true,

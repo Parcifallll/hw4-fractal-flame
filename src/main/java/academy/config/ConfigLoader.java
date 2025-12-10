@@ -5,8 +5,10 @@ import academy.model.FractalConfig;
 import academy.model.TransformationType;
 import academy.model.WeightedFunction;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.File;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -81,16 +83,19 @@ public class ConfigLoader {
 
     private static JsonConfig loadJsonConfig(String path) {
         try {
-            File file = new File(path);
-            if (!file.exists()) {
+            Path filePath = Path.of(path);
+            if (!Files.exists(filePath)) {
                 throw new IllegalArgumentException("Config file not found: " + path);
             }
-            return MAPPER.readValue(file, JsonConfig.class);
+            return MAPPER.readValue(filePath.toFile(), JsonConfig.class);
         } catch (IOException e) {
             throw new RuntimeException("Failed to load config file: " + e.getMessage(), e);
         }
     }
 
+    @SuppressFBWarnings(
+            value = "DMI_RANDOM_USED_ONLY_ONCE",
+            justification = "Random instance used multiple times in loop for generating colors")
     private static List<AffineTransformation> convertAffineFromJson(List<JsonConfig.AffineConfig> affineConfigs) {
         List<AffineTransformation> result = new ArrayList<>();
         Random random = new Random();
@@ -127,7 +132,7 @@ public class ConfigLoader {
         return result;
     }
 
-    // Select value based on priority
+    // Select value based on priority: CLI > JSON > default
     private static <T> T selectValue(T cliValue, T jsonValue, T defaultValue) {
         if (cliValue != null) {
             return cliValue;
