@@ -9,7 +9,6 @@ import academy.model.Rect;
 import academy.model.WeightedFunction;
 import academy.transformation.Transform;
 import academy.transformation.TransformFactory;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,15 +33,7 @@ public class SingleThreadRenderer implements Renderer {
 
         for (int sample = 0; sample < config.iterationCount(); sample++) {
             // Start with random point in [-1, 1] range
-            @SuppressFBWarnings(
-                    value = "DMI_RANDOM_USED_ONLY_ONCE",
-                    justification = "Random calls are intentional for generating random starting point")
-            double startX = random.nextDouble() * 2 - 1;
-            @SuppressFBWarnings(
-                    value = "DMI_RANDOM_USED_ONLY_ONCE",
-                    justification = "Random calls are intentional for generating random starting point")
-            double startY = random.nextDouble() * 2 - 1;
-            Point point = new Point(startX, startY);
+            Point point = new Point(random.nextDouble() * 2 - 1, random.nextDouble() * 2 - 1);
 
             // Skip first iterations to let the point "settle" into the attractor
             for (int step = -SKIP_ITERATIONS; step < config.iterationCount(); step++) {

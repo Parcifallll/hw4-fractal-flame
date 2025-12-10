@@ -3,16 +3,16 @@ package academy.model;
 import java.util.List;
 
 public record FractalConfig(
-        int width,
-        int height,
-        long seed,
-        int iterationCount,
-        String outputPath,
-        int threads,
-        List<AffineTransformation> affineTransformations,
-        List<WeightedFunction> weightedFunctions,
-        boolean gammaCorrection,
-        double gamma) {
+    int width,
+    int height,
+    long seed,
+    int iterationCount,
+    String outputPath,
+    int threads,
+    List<AffineTransformation> affineTransformations,
+    List<WeightedFunction> weightedFunctions,
+    boolean gammaCorrection,
+    double gamma) {
 
     public FractalConfig {
         if (width <= 0) {
@@ -42,6 +42,8 @@ public record FractalConfig(
     }
 
     public double totalWeight() {
-        return weightedFunctions.stream().mapToDouble(WeightedFunction::weight).sum();
+        return weightedFunctions.stream()
+            .mapToDouble(WeightedFunction::weight)
+            .sum();
     }
 }

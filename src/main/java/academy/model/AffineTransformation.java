@@ -1,7 +1,15 @@
 package academy.model;
 
 public record AffineTransformation(
-        double a, double b, double c, double d, double e, double f, int red, int green, int blue) {
+    double a,
+    double b,
+    double c,
+    double d,
+    double e,
+    double f,
+    int red,
+    int green,
+    int blue) {
 
     public AffineTransformation(double a, double b, double c, double d, double e, double f) {
         this(a, b, c, d, e, f, 0, 0, 0);

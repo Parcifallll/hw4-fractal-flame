@@ -18,59 +18,37 @@ import picocli.CommandLine.Option;
 public class Application implements Runnable {
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
-    @Option(
-            names = {"-w", "--width"},
-            description = "Image width")
+    @Option(names = {"-w", "--width"}, description = "Image width")
     private Integer width;
 
-    @Option(
-            names = {"-h", "--height"},
-            description = "Image height")
+    @Option(names = {"-h", "--height"}, description = "Image height")
     private Integer height;
 
-    @Option(
-            names = {"--seed"},
-            description = "Random generator seed")
+    @Option(names = {"--seed"}, description = "Random generator seed")
     private Long seed;
 
-    @Option(
-            names = {"-i", "--iteration-count"},
-            description = "Number of iterations")
+    @Option(names = {"-i", "--iteration-count"}, description = "Number of iterations")
     private Integer iterationCount;
 
-    @Option(
-            names = {"-o", "--output-path"},
-            description = "Output PNG file path")
+    @Option(names = {"-o", "--output-path"}, description = "Output PNG file path")
     private String outputPath;
 
-    @Option(
-            names = {"-t", "--threads"},
-            description = "Number of threads")
+    @Option(names = {"-t", "--threads"}, description = "Number of threads")
     private Integer threads;
 
-    @Option(
-            names = {"-ap", "--affine-params"},
-            description = "Affine transformation parameters")
+    @Option(names = {"-ap", "--affine-params"}, description = "Affine transformation parameters")
     private String affineParams;
 
-    @Option(
-            names = {"-f", "--functions"},
-            description = "Transformation functions with weights")
+    @Option(names = {"-f", "--functions"}, description = "Transformation functions with weights")
     private String functions;
 
-    @Option(
-            names = {"--config"},
-            description = "Path to JSON config file")
+    @Option(names = {"--config"}, description = "Path to JSON config file")
     private String configPath;
 
-    @Option(
-            names = {"-g", "--gamma-correction"},
-            description = "Enable gamma correction")
+    @Option(names = {"-g", "--gamma-correction"}, description = "Enable gamma correction")
     private Boolean gammaCorrection;
 
-    @Option(
-            names = {"--gamma"},
-            description = "Gamma value for correction (default: 2.2)")
+    @Option(names = {"--gamma"}, description = "Gamma value for correction (default: 2.2)")
     private Double gamma;
 
     public static void main(String[] args) {
@@ -118,3 +96,4 @@ public class Application implements Runnable {
         }
     }
 }
+
