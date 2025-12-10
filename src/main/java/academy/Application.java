@@ -4,6 +4,7 @@ import academy.config.ConfigLoader;
 import academy.model.FractalConfig;
 import academy.model.FractalImage;
 import academy.processor.ImageProcessor;
+import academy.renderer.MultiThreadRenderer;
 import academy.renderer.Renderer;
 import academy.renderer.SingleThreadRenderer;
 import java.nio.file.Path;
@@ -81,7 +82,7 @@ public class Application implements Runnable {
                     .log("Starting fractal flame generation");
 
             // Render fractal
-            Renderer renderer = new SingleThreadRenderer();
+            Renderer renderer = config.threads() > 1 ? new MultiThreadRenderer() : new SingleThreadRenderer();
             FractalImage image = renderer.render(config);
 
             // Save to file

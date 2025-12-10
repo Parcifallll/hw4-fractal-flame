@@ -3,52 +3,67 @@
         "width": 1920,
         "height": 1080
     },
-    "iteration_count": 10000,
-    "output_path": "fractal.png",
+    "iteration_count": 30000,
+    "output_path": "fractal_5.png",
     "threads": 4,
-    "seed": 42,
+    "seed": 4535,
+    "gamma_correction": true,
+    "gamma": 2.0,
     "functions": [
-        {
-            "name": "sinusoidal",
-            "weight": 1.0
-        },
-        {
-            "name": "spherical",
-            "weight": 0.8
-        },
+
         {
             "name": "horseshoe",
-            "weight": 0.7
+            "weight": 0.5
         },
         {
             "name": "heart",
-            "weight": 1
+            "weight": 0.5
+        },
+        {
+            "name": "linear",
+            "weight": 0.5
         }
     ],
     "affine_params": [
         {
-            "a": 0.5,
-            "b": 0.3,
-            "c": 0.1,
-            "d": 0.2,
-            "e": 0.6,
-            "f": 0.05
+            "a": 0.824,
+            "b": 0.281,
+            "c": 0,
+            "d": -0.212,
+            "e": 0.864,
+            "f": 0.2
         },
         {
-            "a": 1.0,
-            "b": 0.0,
-            "c": 0.0,
-            "d": 0.0,
-            "e": 1.0,
-            "f": 0.0
+            "a": -0.424,
+            "b": -0.765,
+            "c": -0.3,
+            "d": 0.351,
+            "e": -0.547,
+            "f": -0.1
         },
         {
-            "a": -0.5,
-            "b": 0.5,
-            "c": 0.2,
-            "d": 0.3,
-            "e": -0.4,
-            "f": 0.1
+            "a": 0.162,
+            "b": 0.215,
+            "c": 0.3,
+            "d": -0.136,
+            "e": 0.176,
+            "f": 0.4
+        },
+        {
+            "a": 0.62,
+            "b": 0.215,
+            "c": 0.3,
+            "d": -0.56,
+            "e": 0.376,
+            "f": 0.7
+        },
+        {
+            "a": 0.32,
+            "b": 0.615,
+            "c": 0.45,
+            "d": -0.66,
+            "e": 0.776,
+            "f": 0.5
         }
     ]
 }
