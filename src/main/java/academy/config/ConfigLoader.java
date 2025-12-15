@@ -51,11 +51,11 @@ public class ConfigLoader {
         // Priority: CLI > JSON > defaults
         List<AffineTransformation> affineTransformations;
         if (affineParams != null && !affineParams.isBlank()) {
-            affineTransformations = CliParser.parseAffineParams(affineParams);
+            affineTransformations = CliParser.parseAffineParams(affineParams, finalSeed);
         } else if (jsonConfig != null && jsonConfig.affineParams != null) {
-            affineTransformations = convertAffineFromJson(jsonConfig.affineParams);
+            affineTransformations = convertAffineFromJson(jsonConfig.affineParams, finalSeed);
         } else {
-            affineTransformations = CliParser.parseAffineParams(null);
+            affineTransformations = CliParser.parseAffineParams(null, finalSeed);
         }
 
         // Priority: CLI > JSON > defaults
@@ -96,9 +96,10 @@ public class ConfigLoader {
     @SuppressFBWarnings(
             value = "DMI_RANDOM_USED_ONLY_ONCE",
             justification = "Random instance used multiple times in loop for generating colors")
-    private static List<AffineTransformation> convertAffineFromJson(List<JsonConfig.AffineConfig> affineConfigs) {
+    private static List<AffineTransformation> convertAffineFromJson(
+            List<JsonConfig.AffineConfig> affineConfigs, long seed) {
         List<AffineTransformation> result = new ArrayList<>();
-        Random random = new Random();
+        Random random = new Random(seed);
 
         for (JsonConfig.AffineConfig config : affineConfigs) {
             int red = random.nextInt(256);

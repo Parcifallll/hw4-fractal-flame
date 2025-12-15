@@ -18,7 +18,7 @@ class CliParserTest {
         String input = "1.0,0.0,0.0,0.0,1.0,0.0";
 
         // Act
-        List<AffineTransformation> result = CliParser.parseAffineParams(input);
+        List<AffineTransformation> result = CliParser.parseAffineParams(input, 123L);
 
         // Assert
         assertThat(result).hasSize(1);
@@ -36,7 +36,7 @@ class CliParserTest {
         String input = "1.0,0.0,0.0,0.0,1.0,0.0/0.5,0.5,0.5,0.5,0.5,0.5";
 
         // Act
-        List<AffineTransformation> result = CliParser.parseAffineParams(input);
+        List<AffineTransformation> result = CliParser.parseAffineParams(input, 123L);
 
         // Assert
         assertThat(result).hasSize(2);
@@ -45,7 +45,7 @@ class CliParserTest {
     @Test
     void parseAffineParams_shouldGenerateDefaultWhenNull() {
         // Act
-        List<AffineTransformation> result = CliParser.parseAffineParams(null);
+        List<AffineTransformation> result = CliParser.parseAffineParams(null, 123L);
 
         // Assert
         assertThat(result).hasSize(3);
@@ -54,7 +54,7 @@ class CliParserTest {
     @Test
     void parseAffineParams_shouldGenerateDefaultWhenBlank() {
         // Act
-        List<AffineTransformation> result = CliParser.parseAffineParams("");
+        List<AffineTransformation> result = CliParser.parseAffineParams("", 123L);
 
         // Assert
         assertThat(result).hasSize(3);
@@ -66,7 +66,7 @@ class CliParserTest {
         String input = "1.0,0.0,0.0";
 
         // Act & Assert
-        assertThatThrownBy(() -> CliParser.parseAffineParams(input))
+        assertThatThrownBy(() -> CliParser.parseAffineParams(input, 123L))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("must have 6 coefficients");
     }
@@ -77,7 +77,7 @@ class CliParserTest {
         String input = "abc,0.0,0.0,0.0,1.0,0.0";
 
         // Act & Assert
-        assertThatThrownBy(() -> CliParser.parseAffineParams(input))
+        assertThatThrownBy(() -> CliParser.parseAffineParams(input, 123L))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Invalid affine coefficient");
     }
