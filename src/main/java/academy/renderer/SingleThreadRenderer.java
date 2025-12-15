@@ -13,7 +13,6 @@ public class SingleThreadRenderer extends AbstractRenderer {
         long startTime = System.currentTimeMillis();
 
         FractalImage image = new FractalImage(config.width(), config.height());
-        Random random = new Random(config.seed());
 
         double totalWeight = config.totalWeight();
         // Pre-calculate cumulative weights for weighted random selection
@@ -21,6 +20,8 @@ public class SingleThreadRenderer extends AbstractRenderer {
         Transform[] transforms = buildTransforms(config);
 
         for (int sample = 0; sample < config.iterationCount(); sample++) {
+            // Use deterministic Random for each sample based on seed + sample index
+            Random random = new Random(config.seed() + sample);
             processSample(random, config, totalWeight, cumulativeWeights, transforms, image);
             logSimpleProgress(sample, config.iterationCount());
         }

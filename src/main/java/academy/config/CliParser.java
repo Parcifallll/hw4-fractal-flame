@@ -13,15 +13,16 @@ public class CliParser {
     @SuppressFBWarnings(
             value = "DMI_RANDOM_USED_ONLY_ONCE",
             justification = "Random is intentionally used for generating different colors for each transformation")
-    public static List<AffineTransformation> parseAffineParams(String affineParams) {
+    public static List<AffineTransformation> parseAffineParams(String affineParams, long seed) {
         if (affineParams == null || affineParams.isBlank()) {
-            return generateDefaultAffine();
+            return generateDefaultAffine(seed);
         }
 
         List<AffineTransformation> result = new ArrayList<>();
         String[] transformations = affineParams.split("/");
 
-        for (String transformation : transformations) {
+        for (int i = 0; i < transformations.length; i++) {
+            String transformation = transformations[i];
             String[] coeffs = transformation.split(",");
             if (coeffs.length != 6) {
                 throw new IllegalArgumentException(
@@ -36,8 +37,8 @@ public class CliParser {
                 double e = Double.parseDouble(coeffs[4].trim());
                 double f = Double.parseDouble(coeffs[5].trim());
 
-                // put random color to each affine transformation
-                Random colorRandom = new Random();
+                // Use deterministic color based on seed and index
+                Random colorRandom = new Random(seed + i);
                 int red = colorRandom.nextInt(256);
                 int green = colorRandom.nextInt(256);
                 int blue = colorRandom.nextInt(256);
@@ -81,8 +82,8 @@ public class CliParser {
         return result;
     }
 
-    private static List<AffineTransformation> generateDefaultAffine() {
-        Random random = new Random();
+    private static List<AffineTransformation> generateDefaultAffine(long seed) {
+        Random random = new Random(seed);
         List<AffineTransformation> result = new ArrayList<>();
 
         for (int i = 0; i < 3; i++) {

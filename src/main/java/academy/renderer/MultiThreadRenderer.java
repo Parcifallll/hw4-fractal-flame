@@ -38,13 +38,14 @@ public class MultiThreadRenderer extends AbstractRenderer {
         AtomicInteger completedSamples = new AtomicInteger(0);
         AtomicInteger lastLoggedPercent = new AtomicInteger(0);
 
+        int startSample = 0;
         for (int threadId = 0; threadId < config.threads(); threadId++) {
             int samples = samplesPerThread + (threadId < remainingSamples ? 1 : 0);
-            long threadSeed = config.seed() + threadId * 997L; // Разные семена для потоков
+            int endSample = startSample + samples;
 
             RenderTask task = new RenderTask(
-                    samples,
-                    threadSeed,
+                    startSample,
+                    endSample,
                     image,
                     config,
                     cumulativeWeights,
@@ -54,6 +55,7 @@ public class MultiThreadRenderer extends AbstractRenderer {
                     lastLoggedPercent);
 
             executor.submit(task);
+            startSample = endSample;
         }
 
         executor.shutdown();
@@ -71,8 +73,8 @@ public class MultiThreadRenderer extends AbstractRenderer {
     }
 
     private class RenderTask implements Runnable {
-        private final int samples;
-        private final long seed;
+        private final int startSample;
+        private final int endSample;
         private final FractalImage image;
         private final FractalConfig config;
         private final double[] cumulativeWeights;
@@ -82,8 +84,8 @@ public class MultiThreadRenderer extends AbstractRenderer {
         private final AtomicInteger lastLoggedPercent;
 
         RenderTask(
-                int samples,
-                long seed,
+                int startSample,
+                int endSample,
                 FractalImage image,
                 FractalConfig config,
                 double[] cumulativeWeights,
@@ -91,8 +93,8 @@ public class MultiThreadRenderer extends AbstractRenderer {
                 double totalWeight,
                 AtomicInteger completedSamples,
                 AtomicInteger lastLoggedPercent) {
-            this.samples = samples;
-            this.seed = seed;
+            this.startSample = startSample;
+            this.endSample = endSample;
             this.image = image;
             this.config = config;
             this.cumulativeWeights = cumulativeWeights;
@@ -104,10 +106,9 @@ public class MultiThreadRenderer extends AbstractRenderer {
 
         @Override
         public void run() {
-            // Используем ThreadLocalRandom для лучшей производительности в многопоточном режиме
-            Random random = new Random(seed);
-
-            for (int sample = 0; sample < samples; sample++) {
+            for (int sampleIndex = startSample; sampleIndex < endSample; sampleIndex++) {
+                // Use deterministic Random for each sample based on seed + sample index
+                Random random = new Random(config.seed() + sampleIndex);
                 processSample(random, config, totalWeight, cumulativeWeights, transforms, image);
 
                 // Update progress
